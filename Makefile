@@ -97,6 +97,23 @@ down:
 logs:
 	$(COMPOSE) logs -f --tail=200
 
+## install-hooks: install the pre-commit framework hooks (see .pre-commit-config.yaml)
+.PHONY: install-hooks
+install-hooks:
+	@command -v pre-commit >/dev/null 2>&1 || { \
+	  echo "pre-commit not found. Install one of:"; \
+	  echo "  pipx install pre-commit    # recommended"; \
+	  echo "  brew install pre-commit"; \
+	  echo "  pip install --user pre-commit"; \
+	  exit 1; }
+	pre-commit install
+	@echo "hooks installed — run 'pre-commit run --all-files' to try them now."
+
+## hooks-run: run all pre-commit hooks against every file
+.PHONY: hooks-run
+hooks-run:
+	pre-commit run --all-files
+
 ## clean: remove local build artefacts (does not touch Docker volumes)
 .PHONY: clean
 clean:

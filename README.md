@@ -25,15 +25,41 @@ watcher logic are the next engineer's job.
   go install github.com/air-verse/air@latest
   ```
   `make dev` falls back to `go run` if `air` is not on `$PATH`.
+- Optional: [`pre-commit`](https://pre-commit.com/) for the git hooks
+  ```sh
+  pipx install pre-commit   # or: brew install pre-commit
+  ```
 
 ## First-time setup
 
 ```sh
 cp .env.example .env
 # edit .env — at minimum, set a NEO4J_PASSWORD
+make install-hooks      # enables the tracked pre-commit hook
 make dev-infra          # start Neo4j in Docker
 make dev                # run the Go service on the host, hot reload
 ```
+
+Git hooks are managed by the [pre-commit](https://pre-commit.com/)
+framework (`.pre-commit-config.yaml`). On install they run on every
+commit:
+
+| Hook | Source | What it does |
+| --- | --- | --- |
+| `go-fmt` | tekwizely/pre-commit-golang | reject unformatted Go code |
+| `go-vet-mod` | tekwizely/pre-commit-golang | `go vet ./...` |
+| `go-test-mod` | tekwizely/pre-commit-golang | `go test ./...` |
+| `go-build-mod` | tekwizely/pre-commit-golang | `go build ./...` |
+| `check-added-large-files`, `check-merge-conflict`, `check-yaml`, `end-of-file-fixer`, `trailing-whitespace`, `mixed-line-ending`, `forbid-new-submodules`, `detect-private-key` | pre-commit/pre-commit-hooks | general hygiene |
+| `forbid-generated-paths` | local (`.githooks/forbid-generated.sh`) | refuse to stage `.env`, binaries, temp files, or generated Neo4j/model/vector-store data |
+
+Run across the whole tree at any time:
+
+```sh
+make hooks-run        # pre-commit run --all-files
+```
+
+Bypass with `git commit --no-verify` only when you really know why.
 
 Verify:
 
