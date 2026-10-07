@@ -1,0 +1,42 @@
+# https://pre-commit.com — install with `make install-hooks` after
+# `pipx install pre-commit` (or `brew install pre-commit`).
+#
+# Run manually across the whole tree:  pre-commit run --all-files
+# Bypass on a commit (rare):           git commit --no-verify
+
+repos:
+  # General hygiene — ships with the pre-commit project itself.
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: forbid-new-submodules
+      - id: detect-private-key
+
+  # Go toolchain hooks — gofmt, vet, test, build. The `-mod` variants
+  # operate on the whole module, which is what we want for vet/test/build;
+  # go-fmt only touches the staged .go files.
+  - repo: https://github.com/tekwizely/pre-commit-golang
+    rev: v1.0.0-rc.1
+    hooks:
+      - id: go-fmt
+      - id: go-vet-mod
+      - id: go-test-mod
+      - id: go-build-mod
+
+  # Local hook: refuse to stage secrets, binaries, or generated runtime
+  # data even if the author tried `git add -f` past .gitignore.
+  - repo: local
+    hooks:
+      - id: forbid-generated-paths
+        name: forbid secrets / binaries / generated runtime data
+        language: system
+        entry: ./.githooks/forbid-generated.sh
+        pass_filenames: true

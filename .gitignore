@@ -1,0 +1,50 @@
+# Secrets / local env
+.env
+.env.*
+!.env.example
+
+# Go build artefacts
+/bin/
+/dist/
+/tmp/
+*.exe
+*.test
+*.out
+coverage.*
+
+# Air hot-reload
+tmp/
+.air.log
+build-errors.log
+
+# Neo4j / generated runtime state (local, docker, or stray dumps)
+/neo4j-data/
+/data/
+*.dump
+
+# Future generated model / vector-store artefacts — the subject explicitly
+# forbids committing these.
+/.cache/
+/models/
+/embeddings/
+/chroma/
+*.gguf
+*.safetensors
+*.bin
+
+# Python (demo target may generate these)
+__pycache__/
+*.pyc
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Editor / OS junk
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+Thumbs.db

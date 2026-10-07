@@ -1,0 +1,12 @@
+# Configuration consumed by the IoC patch loop (Part 3). Lives at the root
+# of the target project so each target can define its own validation gate.
+#
+# Not read by the Part 1 infrastructure yet — kept here so the demo target
+# ships with a realistic layout.
+validate:
+  command: ["python", "-m", "py_compile"]
+  # The patch loop will append the modified file paths to the command.
+
+ignore:
+  - "__pycache__"
+  - "*.pyc"
